@@ -3,7 +3,6 @@ import io from 'socket.io-client';
 
 export const useSocket = ( serverPath ) => {
   // useMemo evita que cada vez que se recarga el socket vuelva a conectarse
-  console.log(serverPath);  
   const socket = useMemo ( () => io.connect( serverPath,{
     transports: ['websocket']
   }), [ serverPath ]);  

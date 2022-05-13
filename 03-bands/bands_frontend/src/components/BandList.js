@@ -1,12 +1,19 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
+import { SocketContext } from '../context/SocketContext';
 
-export const BandList = ({bandList, votar, borrarBanda, cambiarNombre}) => {
+export const BandList = () => {
     
-    const [bands, setBands] = useState(bandList);
+    const [ bands, setBands ] = useState([]);
+    const { socket } = useContext( SocketContext );
 
     useEffect(() => {
-        setBands( bandList );
-    },[bandList])
+        socket.on('current-bands', (data) => {
+            console.log("data", data);
+            setBands(data);
+        })
+
+        return ()=> socket.off('current-bands'); // solo se ejecuta al destruir componente
+    },[socket])
 
     const cambioNombre = (event, id) => {
         const nuevoNombre = event.target.value;
@@ -19,8 +26,16 @@ export const BandList = ({bandList, votar, borrarBanda, cambiarNombre}) => {
         console.log(bands);
     }
 
-    const onBlur = (id, nombre) =>{
-        cambiarNombre(id, nombre);
+    const updateBandName = (id, nuevoNombre) =>{
+        socket.emit('cambiar-nombre-banda', {id, nuevoNombre});
+    }
+
+    const votar = (id) => {
+        socket.emit('votar-banda', id);
+    }
+
+    const borrarBanda = (id) => {
+        socket.emit('borrar-banda', id);
     }
 
 
@@ -40,7 +55,7 @@ export const BandList = ({bandList, votar, borrarBanda, cambiarNombre}) => {
                             className = "form-control"
                             value = {band.name}
                             onChange = {(event) => cambioNombre(event, band.id)}
-                            onBlur = {(event) => onBlur(band.id, band.name)}
+                            onBlur = {() => updateBandName(band.id, band.name)}
                         />
                     </td>
                     <td><h3> {band.votes} </h3></td>
