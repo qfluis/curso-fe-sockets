@@ -15,7 +15,12 @@ class Sockets {
         // On connection
         this.io.on('connection', ( socket ) => {
 
-            console.log("Cliente conectado");
+            console.log("Cliente conectado", socket.id);
+
+
+            socket.on('disconnect', () => {
+                console.log("Cliente desconectado", socket.id);
+            });
 
             // Emitir al cliente, todas las bandas
             socket.emit('current-bands', this.bandList.getBands());         
