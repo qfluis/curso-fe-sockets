@@ -3,6 +3,7 @@ import { SocketContext } from '../context/SocketContext';
 
 import { BandAdd } from "../components/BandAdd";
 import { BandList } from "../components/BandList";
+import { BandsChart } from "../components/BandsChart";
 
 
 function HomePage() {
@@ -25,7 +26,11 @@ function HomePage() {
 
       <h1>Band names</h1>
       <hr />
-
+      <div className="row">
+        <div className="col" >
+          <BandsChart />
+        </div>        
+      </div>
       <div className="row">
         <div className="col-md-8">
           <BandList/>
